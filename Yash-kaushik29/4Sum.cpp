@@ -15,6 +15,7 @@ public:
                     long long crSum = (long long)nums[i]+nums[j]+nums[start]+nums[end];
                     if(crSum == target){
                         st.insert({nums[i],nums[j],nums[start],nums[end]});
+                        start++;
                         end--;
                     }else if(crSum>target) end--;
                     else start++;

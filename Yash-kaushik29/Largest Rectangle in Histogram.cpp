@@ -1,70 +1,41 @@
-class Solution {
-private:
-    vector<int> nextSmaller(vector<int> &arr, int n)  {
-          // Write your code here.
-       stack<int> s;
-       s.push(-1);
-
-       vector<int> ans(n);
-
-       for(int i=n-1; i>=0; i--) {
-          int curr = arr[i];
- 
-          while(s.top() != -1 && arr[s.top()] >= curr) {
-              s.pop();
-           }
-          ans[i] = s.top();
-          s.push(i);
-     }
-
-     return ans;
-   }
-
-
-   vector<int> prevSmaller(vector<int> &arr, int n)  {
-          // Write your code here.
-       stack<int> s;
-       s.push(-1);
-
-       vector<int> ans(n);
-
-       for(int i=0; i<n; i++) {
-          int curr = arr[i];
- 
-          while(s.top() != -1 && arr[s.top()] >= curr) {
-              s.pop();
-           }
-          ans[i] = s.top();
-          s.push(i);
-     }
-
-     return ans;
-   }
-
-public:
-    int largestRectangleArea(vector<int>& heights) {
+class Solution
+{
+    public:
+    long long f(int n, long long a[]) {
+        vector<long long> ls(n), rs(n);
+        stack<int> st;
         
-        int n = heights.size();
-        int area = INT_MIN;
-
-        vector<int> next(n);
-        next = nextSmaller(heights,n);
-
-        vector<int> prev(n);
-        prev = prevSmaller(heights,n);
-
-        for(int i=0; i<n; i++) {
-            int l = heights[i];
-
-            if(next[i] == -1) {       // All elements are equal in heights.
-                next[i] = n;
-            }
-            int b = next[i] - prev[i] -1;
-
-            int newArea = l*b;
-            area = max(area,newArea);
+        for(int i = 0; i < n; ++i) {
+            while(!st.empty() && a[st.top()] >= a[i]) st.pop();
+            
+            if(st.empty()) ls[i] = 0;
+            else ls[i] = st.top() + 1;
+            st.push(i);
         }
-
-        return area;
+        
+        while(st.size()) st.pop();
+        
+        for(int i = n - 1; i > -1; --i) {
+            while(!st.empty() && a[st.top()] >= a[i]) st.pop();
+            
+            if(st.empty()) rs[i] = n - 1;
+            else rs[i] = st.top() - 1;
+            st.push(i);
+        }
+        
+        long long ans = 0;
+        for(int i = 0; i < n; ++i) {
+            ans = max(ans, a[i] * (rs[i] - ls[i] + 1));
+        }
+        return ans;
     }
+    
+    //Function to find largest rectangular area possible in a given histogram.
+    long long getMaxArea(long long arr[], int n)
+    {
+        // Your code here
+        return f(n,arr);
+
+}
+
 };
